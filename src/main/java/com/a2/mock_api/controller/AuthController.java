@@ -1,9 +1,6 @@
 package com.a2.mock_api.controller;
 
-import com.a2.mock_api.dto.AuthenticationResponse;
-import com.a2.mock_api.dto.LoginRequest;
-import com.a2.mock_api.dto.RegisterOTPRequest;
-import com.a2.mock_api.dto.RegisterRequest;
+import com.a2.mock_api.dto.*;
 import com.a2.mock_api.exception.CustomException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +21,7 @@ public class AuthController {
     @GetMapping(value = "/login-credentials")
     public ResponseEntity<List<String>> loginCredentials() {
         var loginCredentials = new ArrayList<String>();
-        loginCredentials.add("niraj@gmail.com,Test@123");
+        loginCredentials.add("Email: niraj@gmail.com,Password: Test@123,OTP: 12345");
         return new ResponseEntity<>(loginCredentials, HttpStatus.OK);
     }
 
@@ -50,11 +47,20 @@ public class AuthController {
         ), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/verify-register-otp")
-    public ResponseEntity<String> verifyRegisterOTP(@Valid @RequestBody RegisterOTPRequest registerRequest) throws CustomException {
-        if (!(registerRequest.getEmail().equals("niraj@gmail.com"))) {
+    @PostMapping(value = "/forgot-password")
+    public ResponseEntity<String> forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) throws CustomException {
+        if (!(forgotPasswordRequest.getEmail().equals("niraj@gmail.com"))) {
             throw new CustomException("Email Milena");
         }
         return new ResponseEntity<>("Your password is Test@123. Do not forgot it again.", HttpStatus.OK);
+    }
+
+
+    @PostMapping(value = "/verify-register-otp")
+    public ResponseEntity<String> verifyRegisterOTP(@Valid @RequestBody RegisterOTPRequest registerRequest) throws CustomException {
+        if (!(registerRequest.getEmail().equals("niraj@gmail.com") && registerRequest.getOtp().equals("12345"))) {
+            throw new CustomException("OTP milena");
+        }
+        return new ResponseEntity<>("Successfully verified", HttpStatus.OK);
     }
 }
